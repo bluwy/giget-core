@@ -5,8 +5,7 @@ import path from 'node:path'
 import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 import { parseTarGzip } from 'nanotar'
-
-/** @import { GitInfo } from './index.d.ts' */
+import { SubdirNotFoundError } from './errors.js'
 
 /**
  * @param {string} url
@@ -98,6 +97,8 @@ export async function extract(tarPath, extractPath, subdir) {
   const tarFiles = await parseTarGzip(tarBuffer)
   subdir = subdir?.replace(/^\//, '') || ''
 
+  let subdirFound = false
+
   /** @type {string | null | undefined} */
   let root
   for (const file of tarFiles) {
@@ -124,6 +125,7 @@ export async function extract(tarPath, extractPath, subdir) {
         continue
       }
       filePath = filePath.slice(subdir.length)
+      subdirFound = true
     }
     filePath = path.join(extractPath, filePath)
 
@@ -132,5 +134,9 @@ export async function extract(tarPath, extractPath, subdir) {
       await fs.mkdir(path.dirname(filePath), { recursive: true })
     }
     await fs.writeFile(filePath, Buffer.from(file.data))
+  }
+
+  if (subdir && !subdirFound) {
+    throw new SubdirNotFoundError(`Subdirectory not found in tar: ${subdir}`)
   }
 }

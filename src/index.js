@@ -7,6 +7,7 @@ import { providers } from './providers.js'
 const sourceProtoRe = /^([\w-.]+):/
 
 export { parseGitURI } from './utils.js'
+export * from './errors.js'
 
 /** @type {import('./index.d.ts').downloadTemplate} */
 export async function downloadTemplate(input, options = {}) {
@@ -92,27 +93,12 @@ export async function downloadTemplate(input, options = {}) {
   ) {
     throw new Error(`Destination ${extractPath} already exists.`)
   }
-  await fs.mkdir(extractPath, { recursive: true })
+
+  // NOTE: The extraction will create the extract directory for us, so we don't have
+  // to do so here in case the extraction errors out and causes an undesired empty
+  // directory that's left behind.
 
   await extract(tarPath, extractPath, template.subdir)
-
-  // await extract({
-  //   file: tarPath,
-  //   cwd: extractPath,
-  //   onentry(entry) {
-  //     entry.path = entry.path.split('/').splice(1).join('/')
-  //     if (subdir) {
-  //       // eslint-disable-next-line unicorn/prefer-ternary
-  //       if (entry.path.startsWith(subdir + '/')) {
-  //         // Rewrite path
-  //         entry.path = entry.path.slice(subdir.length)
-  //       } else {
-  //         // Skip
-  //         entry.path = ''
-  //       }
-  //     }
-  //   },
-  // })
 
   return {
     ...template,
