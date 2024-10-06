@@ -1,4 +1,5 @@
 export { downloadTemplate } from './download-template.js'
+export { verifyTemplate } from './verify-template.js'
 export { parseGitURI } from './utils.js'
 export {
   UnsupportedProviderError,

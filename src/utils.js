@@ -6,6 +6,39 @@ import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 import { parseTarGzip } from 'nanotar'
 import { DownloadFailedError, SubdirNotFoundError } from './errors.js'
+import { providers as builtinProviders } from './providers.js'
+
+/** @import { ProviderName, TemplateProvider } from './index.d.ts' */
+
+const sourceProtoRe = /^([\w-.]+):/
+
+/**
+ *
+ * @param {string} input
+ * @param {ProviderName | undefined} providerName
+ * @param {Record<ProviderName, TemplateProvider> | undefined} providers
+ * @returns {{ source: string, providerName: ProviderName, provider: TemplateProvider | undefined }}
+ */
+export function getProvider(input, providerName, providers) {
+  providerName ||= 'github'
+
+  let source = input
+  const sourceProvierMatch = input.match(sourceProtoRe)
+  if (sourceProvierMatch) {
+    providerName = sourceProvierMatch[1]
+    if (providerName !== 'http' && providerName !== 'https') {
+      source = input.slice(sourceProvierMatch[0].length)
+    }
+  }
+
+  const provider = providers?.[providerName] || builtinProviders[providerName]
+
+  return {
+    source,
+    providerName,
+    provider,
+  }
+}
 
 /**
  * @param {string} url

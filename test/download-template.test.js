@@ -1,10 +1,10 @@
 import { it, describe, before, after } from 'node:test'
+import assert from 'node:assert/strict'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { downloadTemplate } from '../src/index.js'
-import assert from 'node:assert/strict'
 
 // NOTE: Some test may rely on the previous to work. While this isn't the best practice,
 // the tests require networking fetching anyways so it's already fragile. And this helps

@@ -1,30 +1,16 @@
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import path from 'node:path'
-import { cacheDirectory, download, extract } from './utils.js'
-import { providers } from './providers.js'
-import {
-  DownloadFailedError,
-  UnsupportedProviderError,
-  DirExistError,
-} from './errors.js'
-
-const sourceProtoRe = /^([\w-.]+):/
+import { cacheDirectory, download, extract, getProvider } from './utils.js'
+import { UnsupportedProviderError, DirExistError } from './errors.js'
 
 /** @type {import('./index.d.ts').downloadTemplate} */
 export async function downloadTemplate(input, options = {}) {
-  let providerName = options.provider || 'github'
-
-  let source = input
-  const sourceProvierMatch = input.match(sourceProtoRe)
-  if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1]
-    if (providerName !== 'http' && providerName !== 'https') {
-      source = input.slice(sourceProvierMatch[0].length)
-    }
-  }
-
-  const provider = options.providers?.[providerName] || providers[providerName]
+  const { source, providerName, provider } = getProvider(
+    input,
+    options.provider,
+    options.providers,
+  )
   if (!provider) {
     throw new UnsupportedProviderError(`Unsupported provider: ${providerName}`)
   }
@@ -32,10 +18,9 @@ export async function downloadTemplate(input, options = {}) {
   const template = await Promise.resolve()
     .then(() => provider(source, { auth: options.auth }))
     .catch((error) => {
-      throw new DownloadFailedError(
-        `Failed to download template from ${providerName}`,
-        { cause: error },
-      )
+      throw new Error(`The ${providerName} provider failed with errors`, {
+        cause: error,
+      })
     })
 
   if (!template) {

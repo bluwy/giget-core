@@ -1,6 +1,6 @@
 import { it, describe } from 'node:test'
-import { parseGitURI } from '../src/utils.js'
 import assert from 'node:assert/strict'
+import { parseGitURI } from '../src/utils.js'
 
 describe('parseGitURI', () => {
   const defaults = { repo: 'org/repo', subdir: '/', ref: undefined }

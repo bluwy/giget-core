@@ -17,6 +17,12 @@ export interface TemplateInfo {
    */
   subdir?: string
   /**
+   * The URL to the original source of the template. Used for pinging the source
+   * by `verifyTemplate` to check if the template is valid. If not set, `verifyTemplate`
+   * will return `true` assuming that it exists.
+   */
+  url?: string
+  /**
    * The default directory name to write the template to. If not set, the `name`
    * is used instead
    */
@@ -110,6 +116,17 @@ export declare function downloadTemplate(
   input: string,
   options?: DownloadTemplateOptions,
 ): Promise<DownloadTemplateResult>
+
+export interface VerifyTemplateOptions
+  extends Pick<DownloadTemplateOptions, 'provider' | 'providers' | 'auth'> {}
+
+/**
+ * Check whether the template is valid (requires network access)
+ */
+export declare function verifyTemplate(
+  input: string,
+  options?: VerifyTemplateOptions,
+): Promise<boolean>
 
 export interface GitInfo {
   repo: string

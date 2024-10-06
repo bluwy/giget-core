@@ -14,6 +14,7 @@ export const http = async (input, options) => {
     name,
     version: undefined,
     subdir: undefined,
+    url: url.href,
     tar: url.href,
     defaultDir: name,
     headers: options.auth
@@ -40,6 +41,7 @@ export const github = (input, options) => {
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
     },
+    url: `https://github.com/${parsed.repo}/tree/${ref}${parsed.subdir}`,
     tar: `${githubAPIURL}/repos/${parsed.repo}/tarball/${ref}`,
   }
 }
@@ -58,6 +60,7 @@ export const gitlab = (input, options) => {
       // https://gitlab.com/gitlab-org/gitlab/-/commit/50c11f278d18fe1f3fb12eb595067216bb58ade2
       'sec-fetch-mode': 'same-origin',
     },
+    url: `${gitlab}/${parsed.repo}/tree/${ref}${parsed.subdir}`,
     tar: `${gitlab}/${parsed.repo}/-/archive/${ref}.tar.gz`,
   }
 }
@@ -71,6 +74,7 @@ export const bitbucket = (input, options) => {
     version: ref,
     subdir: parsed.subdir,
     headers: options.auth ? { Authorization: `Bearer ${options.auth}` } : {},
+    url: `https://bitbucket.com/${parsed.repo}/src/${ref}${parsed.subdir}`,
     tar: `https://bitbucket.org/${parsed.repo}/get/${ref}.tar.gz`,
   }
 }
@@ -84,6 +88,7 @@ export const sourcehut = (input, options) => {
     version: ref,
     subdir: parsed.subdir,
     headers: options.auth ? { Authorization: `Bearer ${options.auth}` } : {},
+    url: `https://git.sr.ht/~${parsed.repo}/tree/${ref}/item${parsed.subdir}`,
     tar: `https://git.sr.ht/~${parsed.repo}/archive/${ref}.tar.gz`,
   }
 }
