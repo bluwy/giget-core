@@ -41,9 +41,8 @@ export type ProviderName =
 
 export interface DownloadTemplateOptions {
   /**
-   * Specify the specific provider to use
-   *
-   * @default 'github'
+   * Specify the specific provider to use. If not set, it will be inferred from the `input`
+   * prefix (e.g. `gh:` will use the `github` provider), or falls back to `github`.
    */
   provider?: ProviderName
   /**
