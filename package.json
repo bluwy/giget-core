@@ -1,0 +1,23 @@
+{
+  "name": "download-template",
+  "description": "Download template from a URL",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./src/index.js",
+  "scripts": {
+    "test": "node --test",
+    "lint": "prettier \"**/*.{js,ts,md}\" --check",
+    "format": "prettier \"**/*.{js,ts,md}\" --write",
+    "typecheck": "tsc"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "dependencies": {
+    "nanotar": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2"
+  } 
+}
