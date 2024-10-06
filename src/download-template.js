@@ -89,7 +89,7 @@ export async function downloadTemplate(input, options = {}) {
   await extract(tarPath, extractPath, template.subdir)
 
   return {
-    ...template,
+    info: template,
     source,
     dir: extractPath,
   }

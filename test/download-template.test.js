@@ -39,7 +39,7 @@ describe('downloadTemplate', () => {
 
     assert.ok(fss.existsSync(targetDir))
     assert.ok(fss.existsSync(path.join(targetDir, 'README.md')))
-    assert.equal(result.name, 'unjs-template')
+    assert.equal(result.info.name, 'unjs-template')
     assert.equal(result.source, 'unjs/template')
 
     // download again, should error as directory is not empty
@@ -66,7 +66,7 @@ describe('downloadTemplate', () => {
 
       assert.ok(fss.existsSync(targetDir))
       assert.ok(fss.existsSync(path.join(targetDir, 'README.md')))
-      assert.equal(result.name, templateName)
+      assert.equal(result.info.name, templateName)
       assert.equal(result.source, templateInput)
 
       // download again, should error as directory is not empty
@@ -86,7 +86,7 @@ describe('downloadTemplate', () => {
 
     assert.ok(fss.existsSync(targetDir))
     assert.ok(fss.existsSync(path.join(targetDir, 'index.ts')))
-    assert.equal(result.name, 'unjs-template')
+    assert.equal(result.info.name, 'unjs-template')
     assert.equal(result.source, 'unjs/template/playground')
   })
 
@@ -100,7 +100,7 @@ describe('downloadTemplate', () => {
 
     assert.ok(fss.existsSync(targetDir))
     assert.ok(fss.existsSync(path.join(targetDir, 'README.md')))
-    assert.equal(result.name, 'unjs-template')
+    assert.equal(result.info.name, 'unjs-template')
     assert.equal(result.source, 'unjs/template')
   })
 
@@ -125,7 +125,7 @@ describe('downloadTemplate', () => {
     })
     assert.ok(fss.existsSync(targetDir))
     assert.ok(fss.existsSync(path.join(targetDir, 'README.md')))
-    assert.equal(result.name, 'unjs-template')
+    assert.equal(result.info.name, 'unjs-template')
     assert.equal(result.source, 'unjs/template')
     assert.notEqual(fss.readFileSync(path.join(targetDir, 'README.md')), 'test') // overwritten
     assert.ok(!fss.existsSync(path.join(targetDir, 'blabla.md'))) // removed
@@ -143,7 +143,7 @@ describe('downloadTemplate', () => {
     })
     assert.ok(fss.existsSync(targetDir))
     assert.ok(fss.existsSync(path.join(targetDir, 'README.md')))
-    assert.equal(result.name, 'unjs-template')
+    assert.equal(result.info.name, 'unjs-template')
     assert.equal(result.source, 'unjs/template')
     assert.notEqual(fss.readFileSync(path.join(targetDir, 'README.md')), 'test') // overwritten
     assert.ok(fss.existsSync(path.join(targetDir, 'blabla.md'))) // preserved

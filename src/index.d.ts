@@ -91,7 +91,11 @@ export interface DownloadTemplateOptions {
   auth?: string
 }
 
-export interface DownloadTemplateResult extends TemplateInfo {
+export interface DownloadTemplateResult {
+  /**
+   * The parsed template information
+   */
+  info: TemplateInfo
   /**
    * The source URL of the template (Prefix like `gh:` is stripped)
    */
