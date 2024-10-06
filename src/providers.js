@@ -38,8 +38,8 @@ export const http = async (input, options) => {
 
   return {
     name: `${name}-${url.href.slice(0, 8)}`,
-    version: '',
-    subdir: '',
+    version: undefined,
+    subdir: undefined,
     tar: url.href,
     defaultDir: name,
     headers: options.auth
@@ -69,6 +69,7 @@ const _httpJSON = async (input, options) => {
 /** @type {TemplateProvider} */
 export const github = (input, options) => {
   const parsed = parseGitURI(input)
+  const ref = parsed.ref || 'main'
 
   // https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-tar
   // TODO: Verify solution for github enterprise
@@ -76,61 +77,58 @@ export const github = (input, options) => {
 
   return {
     name: parsed.repo.replace('/', '-'),
-    version: parsed.ref,
+    version: ref,
     subdir: parsed.subdir,
     headers: {
       ...(options.auth ? { Authorization: `Bearer ${options.auth}` } : {}),
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
     },
-    url: `${githubAPIURL.replace('api.github.com', 'github.com')}/${
-      parsed.repo
-    }/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${githubAPIURL}/repos/${parsed.repo}/tarball/${parsed.ref}`,
+    tar: `${githubAPIURL}/repos/${parsed.repo}/tarball/${ref}`,
   }
 }
 
 /** @type {TemplateProvider} */
 export const gitlab = (input, options) => {
   const parsed = parseGitURI(input)
+  const ref = parsed.ref || 'main'
   const gitlab = 'https://gitlab.com'
   return {
     name: parsed.repo.replace('/', '-'),
-    version: parsed.ref,
+    version: ref,
     subdir: parsed.subdir,
     headers: {
       ...(options.auth ? { Authorization: `Bearer ${options.auth}` } : {}),
       // https://gitlab.com/gitlab-org/gitlab/-/commit/50c11f278d18fe1f3fb12eb595067216bb58ade2
       'sec-fetch-mode': 'same-origin',
     },
-    url: `${gitlab}/${parsed.repo}/tree/${parsed.ref}${parsed.subdir}`,
-    tar: `${gitlab}/${parsed.repo}/-/archive/${parsed.ref}.tar.gz`,
+    tar: `${gitlab}/${parsed.repo}/-/archive/${ref}.tar.gz`,
   }
 }
 
 /** @type {TemplateProvider} */
 export const bitbucket = (input, options) => {
   const parsed = parseGitURI(input)
+  const ref = parsed.ref || 'main'
   return {
     name: parsed.repo.replace('/', '-'),
-    version: parsed.ref,
+    version: ref,
     subdir: parsed.subdir,
     headers: options.auth ? { Authorization: `Bearer ${options.auth}` } : {},
-    url: `https://bitbucket.com/${parsed.repo}/src/${parsed.ref}${parsed.subdir}`,
-    tar: `https://bitbucket.org/${parsed.repo}/get/${parsed.ref}.tar.gz`,
+    tar: `https://bitbucket.org/${parsed.repo}/get/${ref}.tar.gz`,
   }
 }
 
 /** @type {TemplateProvider} */
 export const sourcehut = (input, options) => {
   const parsed = parseGitURI(input)
+  const ref = parsed.ref || 'main'
   return {
     name: parsed.repo.replace('/', '-'),
-    version: parsed.ref,
+    version: ref,
     subdir: parsed.subdir,
     headers: options.auth ? { Authorization: `Bearer ${options.auth}` } : {},
-    url: `https://git.sr.ht/~${parsed.repo}/tree/${parsed.ref}/item${parsed.subdir}`,
-    tar: `https://git.sr.ht/~${parsed.repo}/archive/${parsed.ref}.tar.gz`,
+    tar: `https://git.sr.ht/~${parsed.repo}/archive/${ref}.tar.gz`,
   }
 }
 

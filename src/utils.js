@@ -50,16 +50,13 @@ export async function download(url, filePath, options = {}) {
 const inputRegex =
   /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/
 
-/**
- * @param {string} input
- * @returns {Omit<GitInfo, 'provider'>}
- */
+/** @type {import('./index.d.ts').parseGitURI} */
 export function parseGitURI(input) {
   const m = input.match(inputRegex)?.groups || {}
   return {
     repo: m.repo,
     subdir: m.subdir || '/',
-    ref: m.ref ? m.ref.slice(1) : 'main',
+    ref: m.ref?.slice(1),
   }
 }
 

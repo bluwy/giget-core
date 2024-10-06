@@ -3,7 +3,7 @@ import { parseGitURI } from '../src/utils.js'
 import assert from 'node:assert/strict'
 
 describe('parseGitURI', () => {
-  const defaults = { repo: 'org/repo', subdir: '/', ref: 'main' }
+  const defaults = { repo: 'org/repo', subdir: '/', ref: undefined }
   const tests = [
     { input: 'org/repo', output: {} },
     { input: 'org/repo#ref', output: { ref: 'ref' } },

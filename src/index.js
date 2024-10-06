@@ -56,10 +56,9 @@ export async function downloadTemplate(input, options = {}) {
     (template.version || template.name) + '.tar.gz',
   )
 
-  if (options.preferOffline && fss.existsSync(tarPath)) {
-    options.offline = true
-  }
-  if (!options.offline) {
+  if (
+    options.offline === 'prefer' ? !fss.existsSync(tarPath) : !options.offline
+  ) {
     await fs.mkdir(path.dirname(tarPath), { recursive: true })
     await download(template.tar, tarPath, {
       headers: {
@@ -84,10 +83,9 @@ export async function downloadTemplate(input, options = {}) {
   // Extract template
   const cwd = path.resolve(options.cwd || '.')
   const extractPath = path.resolve(cwd, options.dir || template.defaultDir)
-  if (options.forceClean) {
+  if (options.force === 'clean') {
     await fs.rm(extractPath, { recursive: true, force: true })
-  }
-  if (
+  } else if (
     !options.force &&
     fss.existsSync(extractPath) &&
     fss.readdirSync(extractPath).length > 0
