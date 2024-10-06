@@ -96,6 +96,16 @@ export interface DownloadTemplateResult extends TemplateInfo {
   dir: string
 }
 
+/**
+ * Download a template with a given input, e.g.:
+ * - `owner/repo` (github)
+ * - `gh:owner/repo`
+ * - `github:owner/repo`
+ * - `gitlab:owner/repo`
+ * - `bitbucket:owner/repo`
+ * - `sourcehut:owner/repo`
+ * - `https://api.github.com/repos/owner/repo/tarball/main`
+ */
 export declare function downloadTemplate(
   input: string,
   options?: DownloadTemplateOptions,

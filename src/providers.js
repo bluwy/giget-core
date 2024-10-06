@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { parseGitURI, sendFetch } from './utils.js'
+import { parseGitURI } from './utils.js'
 
 /** @import { TemplateProvider, TemplateInfo } from './index.d.ts' */
 
@@ -7,37 +7,11 @@ import { parseGitURI, sendFetch } from './utils.js'
 
 /** @type {AsyncTemplateProvider} */
 export const http = async (input, options) => {
-  if (input.endsWith('.json')) {
-    return await _httpJSON(input, options)
-  }
-
   const url = new URL(input)
-  let name = path.basename(url.pathname)
-
-  try {
-    const head = await sendFetch(url.href, {
-      method: 'HEAD',
-      validateStatus: true,
-      headers: options.auth
-        ? { Authorization: `Bearer ${options.auth}` }
-        : undefined,
-    })
-    const _contentType = head.headers.get('content-type') || ''
-    if (_contentType.includes('application/json')) {
-      return await _httpJSON(input, options)
-    }
-    const filename = head.headers
-      .get('content-disposition')
-      ?.match(/filename="?(.+)"?/)?.[1]
-    if (filename) {
-      name = filename.split('.')[0]
-    }
-  } catch (error) {
-    // console.log(`Failed to fetch HEAD for ${url.href}:`, error);
-  }
+  const name = path.basename(url.pathname)
 
   return {
-    name: `${name}-${url.href.slice(0, 8)}`,
+    name,
     version: undefined,
     subdir: undefined,
     tar: url.href,
@@ -46,24 +20,6 @@ export const http = async (input, options) => {
       ? { Authorization: `Bearer ${options.auth}` }
       : undefined,
   }
-}
-
-/** @type {AsyncTemplateProvider} */
-const _httpJSON = async (input, options) => {
-  const result = await sendFetch(input, {
-    validateStatus: true,
-    headers: options.auth
-      ? { Authorization: `Bearer ${options.auth}` }
-      : undefined,
-  })
-  /** @type {TemplateInfo} */
-  const info = await result.json()
-  if (!info.tar || !info.name) {
-    throw new Error(
-      `Invalid template info from ${input}. name or tar fields are missing!`,
-    )
-  }
-  return info
 }
 
 /** @type {TemplateProvider} */
