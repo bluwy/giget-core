@@ -112,3 +112,4 @@ export declare function parseGitURI(input: string): GitInfo
 export declare class UnsupportedProviderError extends Error {}
 export declare class DownloadFailedError extends Error {}
 export declare class SubdirNotFoundError extends Error {}
+export declare class DirExistError extends Error {}

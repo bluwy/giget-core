@@ -5,7 +5,7 @@ import path from 'node:path'
 import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
 import { parseTarGzip } from 'nanotar'
-import { SubdirNotFoundError } from './errors.js'
+import { DownloadFailedError, SubdirNotFoundError } from './errors.js'
 
 /**
  * @param {string} url
@@ -32,12 +32,14 @@ export async function download(url, filePath, options = {}) {
 
   const response = await sendFetch(url, { headers: options.headers })
   if (response.status >= 400) {
-    throw new Error(
+    throw new DownloadFailedError(
       `Failed to download ${url}: ${response.status} ${response.statusText}`,
     )
   }
   if (response.body == null) {
-    throw new Error(`Failed to download ${url}: empty response body`)
+    throw new DownloadFailedError(
+      `Failed to download ${url}: empty response body`,
+    )
   }
 
   const stream = fss.createWriteStream(filePath)
@@ -71,7 +73,7 @@ export async function sendFetch(url, options = {}) {
   }
 
   const res = await fetch(url, options).catch((error) => {
-    throw new Error(`Failed to download ${url}`, { cause: error })
+    throw new Error(`Failed to fetch ${url}`, { cause: error })
   })
 
   if (options.validateStatus && res.status >= 400) {
