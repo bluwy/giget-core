@@ -16,6 +16,8 @@ The API is heavily documented in [./src/index.d.ts](./src/index.d.ts). Below sho
 
 ### `downloadTemplate`
 
+Download a template with a given input string.
+
 ```js
 import { downloadTemplate } from '@bluwy/giget-core'
 
@@ -62,6 +64,8 @@ await downloadTemplate('unjs/template', { providerOptions: { auth: 'xxx' } })
 
 ### `verifyTemplate`
 
+Check whether the template is valid. Requires network access.
+
 ```js
 import { verifyTemplate } from '@bluwy/giget-core'
 
@@ -79,6 +83,8 @@ await verifyTemplate('unjs/template#not-existent-branch') // false
 ```
 
 ### `parseGitURI`
+
+Parse an input (e.g. `'owner/repo/templates/foo#main'`) into a `GitInfo` object. Useful for custom providers that need to parse the given input.
 
 ```js
 import { parseGitURI } from '@bluwy/giget-core'
