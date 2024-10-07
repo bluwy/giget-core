@@ -1,4 +1,4 @@
-# download-template
+# @bluwy/giget-core
 
 A JavaScript API to download a template from a git repository or URL. The code is largely based on [giget](https://github.com/unjs/giget) (and includes its license), but with the below main differences:
 
@@ -17,7 +17,7 @@ The API is heavily documented in [./src/index.d.ts](./src/index.d.ts). Below sho
 ### `downloadTemplate`
 
 ```js
-import { downloadTemplate } from 'download-template'
+import { downloadTemplate } from '@bluwy/giget-core'
 
 // Basic usage. Download from github repo.
 const result = await downloadTemplate('unjs/template')
@@ -63,7 +63,7 @@ await downloadTemplate('unjs/template', { providerOptions: { auth: 'xxx' } })
 ### `verifyTemplate`
 
 ```js
-import { verifyTemplate } from 'download-template'
+import { verifyTemplate } from '@bluwy/giget-core'
 
 await verifyTemplate('unjs/template') // true
 await verifyTemplate('unjs/template/subdir') // true
@@ -81,7 +81,7 @@ await verifyTemplate('unjs/template#not-existent-branch') // false
 ### `parseGitURI`
 
 ```js
-import { parseGitURI } from 'download-template'
+import { parseGitURI } from '@bluwy/giget-core'
 
 parseGitURI('owner/repo') // { repo: 'owner/repo', subdir: '/' }
 parseGitURI('owner/repo/subdir') // { repo: 'owner/repo', subdir: '/subdir' }
@@ -109,7 +109,7 @@ parseGitURI('owner/repo/subdir#main') // { repo: 'owner/repo', subdir: '/subdir'
 
 As mentioned above, this project is based heavily on [giget](https://github.com/unjs/giget)! Thanks [@pi0](https://github.com/pi0) for the original work and battle-testing it.
 
-In the future, I hope the code here can be merged back to `giget`, perhaps as a "core" library, and have the CLI as a wrapper library.
+In the future, I hope the code here can be merged back to `giget`, perhaps as a `giget-core` library, and have the `giget` CLI as a wrapper library.
 
 ## License
 

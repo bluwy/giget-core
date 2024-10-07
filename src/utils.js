@@ -118,8 +118,8 @@ export async function sendFetch(url, options = {}) {
 
 export function cacheDirectory() {
   return process.env.XDG_CACHE_HOME
-    ? path.resolve(process.env.XDG_CACHE_HOME, 'download-template')
-    : path.resolve(os.homedir(), '.cache/download-template')
+    ? path.resolve(process.env.XDG_CACHE_HOME, 'bluwy-giget')
+    : path.resolve(os.homedir(), '.cache/bluwy-giget')
 }
 
 /**

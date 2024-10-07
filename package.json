@@ -1,5 +1,5 @@
 {
-  "name": "download-template",
+  "name": "@bluwy/giget-core",
   "description": "Download template from a git repo or tarball URL",
   "version": "0.1.0",
   "license": "MIT",
@@ -12,10 +12,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bluwy/download-template.git"
+    "url": "git+https://github.com/bluwy/giget-core.git"
   },
   "bugs": {
-    "url": "https://github.com/bluwy/download-template/issues"
+    "url": "https://github.com/bluwy/giget-core/issues"
   },
   "keywords": [
     "scaffolding",
