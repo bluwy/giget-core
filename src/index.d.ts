@@ -33,12 +33,20 @@ export interface TemplateInfo {
   headers?: Record<string, string>
 }
 
+// NOTE: Allow extending in the future to pass additional options to custom or builtin providers
+export interface ProviderOptions {
+  /**
+   * The authentication token used for fetching the template tarball (e.g. private repos)
+   */
+  auth?: string
+}
+
 export type TemplateProvider = (
   /**
    * The input string with provider prefix like `gh:` stripped
    */
   input: string,
-  options: { auth?: string },
+  options: ProviderOptions,
 ) => TemplateInfo | Promise<TemplateInfo>
 
 export type ProviderName =
@@ -78,10 +86,6 @@ export interface DownloadTemplateOptions {
    */
   offline?: boolean | 'prefer'
   /**
-   * The authentication token used for fetching the template tarball (e.g. private repos)
-   */
-  auth?: string
-  /**
    * Specify the specific provider to use. If not set, it will be inferred from the `input`
    * prefix (e.g. `gh:` will use the `github` provider), or falls back to `github`.
    */
@@ -91,6 +95,10 @@ export interface DownloadTemplateOptions {
    * providers to override their implementation if needed.
    */
   providers?: Record<ProviderName, TemplateProvider>
+  /**
+   * Additional options to pass to the provider
+   */
+  providerOptions?: ProviderOptions
 }
 
 export interface DownloadTemplateResult {
@@ -124,7 +132,10 @@ export declare function downloadTemplate(
 ): Promise<DownloadTemplateResult>
 
 export interface VerifyTemplateOptions
-  extends Pick<DownloadTemplateOptions, 'provider' | 'providers' | 'auth'> {}
+  extends Pick<
+    DownloadTemplateOptions,
+    'provider' | 'providers' | 'providerOptions'
+  > {}
 
 /**
  * Check whether the template is valid. Requires network access.

@@ -16,7 +16,7 @@ export async function downloadTemplate(input, options = {}) {
   }
 
   const template = await Promise.resolve()
-    .then(() => provider(source, { auth: options.auth }))
+    .then(() => provider(source, options.providerOptions ?? {}))
     .catch((error) => {
       throw new Error(`The ${providerName} provider failed with errors`, {
         cause: error,
