@@ -1,12 +1,27 @@
 {
   "name": "download-template",
-  "description": "Download template from a URL",
-  "version": "1.0.0",
+  "description": "Download template from a git repo or tarball URL",
+  "version": "0.1.0",
   "license": "MIT",
   "type": "module",
+  "types": "./src/index.d.ts",
   "exports": "./src/index.js",
+  "sideEffects": false,
   "files": [
     "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluwy/download-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bluwy/download-template/issues"
+  },
+  "keywords": [
+    "scaffolding",
+    "template",
+    "git",
+    "download"
   ],
   "scripts": {
     "test": "node --test",
