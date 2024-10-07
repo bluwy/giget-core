@@ -49,18 +49,14 @@ export async function downloadTemplate(input, options = {}) {
     options.offline === 'prefer' ? !fss.existsSync(tarPath) : !options.offline
   ) {
     await fs.mkdir(path.dirname(tarPath), { recursive: true })
-    await download(template.tar, tarPath, {
-      headers: {
-        ...(options.auth ? { Authorization: `Bearer ${options.auth}` } : {}),
-        ...template.headers,
+    await download(template.tar, tarPath, { headers: template.headers }).catch(
+      (error) => {
+        if (!fss.existsSync(tarPath)) {
+          throw error
+        }
+        // Accept network errors if we have a cached version
       },
-    }).catch((error) => {
-      if (!fss.existsSync(tarPath)) {
-        throw error
-      }
-      // Accept network errors if we have a cached version
-      options.offline = true
-    })
+    )
   }
 
   if (!fss.existsSync(tarPath)) {

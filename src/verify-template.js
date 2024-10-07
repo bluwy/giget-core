@@ -26,10 +26,7 @@ export async function verifyTemplate(input, options = {}) {
   if (template.url) {
     const response = await sendFetch(template.url, {
       method: 'HEAD',
-      headers: {
-        ...(options.auth ? { Authorization: `Bearer ${options.auth}` } : {}),
-        ...template.headers,
-      },
+      headers: template.headers,
     })
     return response.status >= 200 && response.status < 300
   }

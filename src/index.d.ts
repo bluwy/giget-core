@@ -34,6 +34,9 @@ export interface TemplateInfo {
 }
 
 export type TemplateProvider = (
+  /**
+   * The input string with provider prefix like `gh:` stripped
+   */
   input: string,
   options: { auth?: string },
 ) => TemplateInfo | null | Promise<TemplateInfo | null>
@@ -47,16 +50,20 @@ export type ProviderName =
 
 export interface DownloadTemplateOptions {
   /**
-   * Specify the specific provider to use. If not set, it will be inferred from the `input`
-   * prefix (e.g. `gh:` will use the `github` provider), or falls back to `github`.
+   * The directory to download the template to. If unset, it defaults to the `defaultDir` or `name` of the template
+   * handled by the provider.
    */
-  provider?: ProviderName
+  dir?: string
   /**
-   * Whether to always force copy the template to the `dir` even if there's existing
+   * The current working directory used for resolving the `dir` path
+   */
+  cwd?: string
+  /**
+   * Whether to always force download the template to the `dir` even if there's existing
    * content in the directory.
-   * - `true`: Force copy to the directory (may overwrite existing files)
-   * - `'clean'`: Always remove the directory first before copying
-   * - `false`: If there's existing content, skip copying and error
+   * - `true`: Force download to the directory (may overwrite existing files)
+   * - `'clean'`: Always remove the directory first before downloading
+   * - `false`: If there's existing content, skip download and error
    *
    * @default false
    */
@@ -71,24 +78,20 @@ export interface DownloadTemplateOptions {
    */
   offline?: boolean | 'prefer'
   /**
+   * The authentication token used for fetching the template tarball (e.g. private repos)
+   */
+  auth?: string
+  /**
+   * Specify the specific provider to use. If not set, it will be inferred from the `input`
+   * prefix (e.g. `gh:` will use the `github` provider), or falls back to `github`.
+   */
+  provider?: ProviderName
+  /**
    * Additional providers to use for fetching templates. This can have the same name as the buitlin
    * providers to override their implementation if needed, and if the provider returns null, it will
    * fallback to the builtin provider.
    */
   providers?: Record<ProviderName, TemplateProvider>
-  /**
-   * The directory to copy to. If unset, it defaults to the `defaultDir` or `name` of the template
-   * handled by the provider.
-   */
-  dir?: string
-  /**
-   * The current working directory used for resolving the `dir` path
-   */
-  cwd?: string
-  /**
-   * The authentication token used for fetching the template tarball (e.g. private repos)
-   */
-  auth?: string
 }
 
 export interface DownloadTemplateResult {
@@ -125,7 +128,7 @@ export interface VerifyTemplateOptions
   extends Pick<DownloadTemplateOptions, 'provider' | 'providers' | 'auth'> {}
 
 /**
- * Check whether the template is valid (requires network access)
+ * Check whether the template is valid. Requires network access.
  */
 export declare function verifyTemplate(
   input: string,
@@ -133,14 +136,39 @@ export declare function verifyTemplate(
 ): Promise<boolean>
 
 export interface GitInfo {
+  /**
+   * @example 'owner/repo'
+   */
   repo: string
+  /**
+   * @example '/' or '/templates/foo'
+   */
   subdir: string
+  /**
+   * @example 'main' or undefined
+   */
   ref?: string
 }
 
+/**
+ * Parse an input (e.g. `'owner/repo/templates/foo#main'`) into a `GitInfo` object.
+ * Useful for custom providers that need to parse the given input.
+ */
 export declare function parseGitURI(input: string): GitInfo
 
+/**
+ * A provider name is given but it doesn't match any of the supported providers
+ */
 export declare class UnsupportedProviderError extends Error {}
+/**
+ * An error happened while downloading the template tarball
+ */
 export declare class DownloadFailedError extends Error {}
+/**
+ * The template subdirectory specified to download doesn't exist
+ */
 export declare class SubdirNotFoundError extends Error {}
+/**
+ * The directory to download the template to already exists
+ */
 export declare class DirExistError extends Error {}
