@@ -5,11 +5,11 @@ import { parseGitURI } from './utils.js'
 
 /** @typedef {(input: string, options: { auth?: string }) => Promise<TemplateInfo>} AsyncTemplateProvider */
 
+// weird ts issue that needs this workaround
 /** @type {AsyncTemplateProvider} */
 export const http = async (input, options) => {
   const url = new URL(input)
   const name = path.basename(url.pathname)
-
   return {
     name,
     version: undefined,

@@ -39,7 +39,7 @@ export type TemplateProvider = (
    */
   input: string,
   options: { auth?: string },
-) => TemplateInfo | null | Promise<TemplateInfo | null>
+) => TemplateInfo | Promise<TemplateInfo>
 
 export type ProviderName =
   | 'github'
@@ -88,8 +88,7 @@ export interface DownloadTemplateOptions {
   provider?: ProviderName
   /**
    * Additional providers to use for fetching templates. This can have the same name as the buitlin
-   * providers to override their implementation if needed, and if the provider returns null, it will
-   * fallback to the builtin provider.
+   * providers to override their implementation if needed.
    */
   providers?: Record<ProviderName, TemplateProvider>
 }

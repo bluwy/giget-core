@@ -82,7 +82,7 @@ export async function download(url, filePath, options = {}) {
 }
 
 const inputRegex =
-  /^(?<repo>[\w.-]+\/[\w.-]+)(?<subdir>[^#]+)?(?<ref>#[\w./@-]+)?/
+  /^(?<repo>[\w\-.]+\/[\w\-.]+)(?<subdir>[^#]+)?(?<ref>#[\w\-./@]+)?/
 
 /** @type {import('./index.d.ts').parseGitURI} */
 export function parseGitURI(input) {

@@ -19,9 +19,6 @@ export async function verifyTemplate(input, options = {}) {
         cause: error,
       })
     })
-  if (!template) {
-    throw new Error(`Failed to resolve template from ${providerName}`)
-  }
 
   if (template.url) {
     const response = await sendFetch(template.url, {

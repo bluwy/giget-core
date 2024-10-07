@@ -23,10 +23,6 @@ export async function downloadTemplate(input, options = {}) {
       })
     })
 
-  if (!template) {
-    throw new Error(`Failed to resolve template from ${providerName}`)
-  }
-
   // Sanitize name and defaultDir
   template.name = (template.name || 'template').replace(/[^\da-z-]/gi, '-')
   template.defaultDir = (template.defaultDir || template.name).replace(
