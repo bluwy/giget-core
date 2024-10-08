@@ -75,6 +75,7 @@ export async function download(url, filePath, options = {}) {
     )
   }
 
+  await fs.mkdir(path.dirname(filePath), { recursive: true })
   const stream = fss.createWriteStream(filePath)
   await promisify(pipeline)(response.body, stream)
 

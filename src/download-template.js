@@ -44,7 +44,6 @@ export async function downloadTemplate(input, options = {}) {
   if (
     options.offline === 'prefer' ? !fss.existsSync(tarPath) : !options.offline
   ) {
-    await fs.mkdir(path.dirname(tarPath), { recursive: true })
     await download(template.tar, tarPath, { headers: template.headers }).catch(
       (error) => {
         if (!fss.existsSync(tarPath)) {
