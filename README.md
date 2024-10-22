@@ -3,7 +3,7 @@
 A JavaScript API to download a template from a git repository or URL. The code is largely based on [giget](https://github.com/unjs/giget) (and includes its license), but with the below main differences:
 
 - Only the JavaScript API. The CLI and unrelated APIs are stripped off.
-- Reduced dependencies to only 1 ([nanotar](https://github.com/unjs/nanotar)).
+- Reduced dependencies to only 1 ([tar](https://github.com/isaacs/node-tar)).
 - Modified API interface (reduce input and output surface).
 - Removed custom registries and JSON template support.
 - Removed `GIGET_` special environment variables support.

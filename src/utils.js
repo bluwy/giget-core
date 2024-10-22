@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
-import { parseTarGzip } from 'nanotar'
+import { extract as _extract } from 'tar'
 import { DownloadFailedError, SubdirNotFoundError } from './errors.js'
 import { providers as builtinProviders } from './providers.js'
 
@@ -129,82 +129,46 @@ export function cacheDirectory() {
  * @param {string} [subdir]
  */
 export async function extract(tarPath, extractPath, subdir) {
-  const tarBuffer = await fs.readFile(tarPath)
-  const tarFiles = await parseTarGzip(tarBuffer)
-  subdir = subdir?.replace(/^\//, '') || ''
-
-  let subdirFound = false
-  /** @type {string | null} */
-  let lastDirPath = null
-  /** @type {Set<string>} */
-  const writtenDirs = new Set()
-
-  /** @type {string | null | undefined} */
-  let root
-  for (const file of tarFiles) {
-    if (file.name === 'pax_global_header') continue
-
-    const isDir = file.name.endsWith('/')
-
-    // The first tar file should be the root directory
-    if (root === undefined) {
-      root = isDir ? file.name : null
+  // subdir `/` is the same as root, so ignore as undefined
+  if (subdir === '/') {
+    subdir = undefined
+  }
+  // If `subdir` is defined, ensure it has no leading slash, and has a trailing slash
+  if (subdir) {
+    if (subdir.startsWith('/')) {
+      subdir = subdir.slice(1)
     }
-
-    if (isDir) {
-      if (root && !file.name.startsWith(root) && lastDirPath) {
-        lastDirPath += file.name
-      } else {
-        lastDirPath = file.name
-      }
+    if (!subdir.endsWith('/')) {
+      subdir += '/'
     }
-
-    // NOTE: There's a problem handling `with-schema-config/` when downloading `withastro/astro`.
-    // The lastDirPath is `withastro-astro-3d1f3ac/packages/astro/test/fixtures/content-collections/src/content/with-data/`
-    // so you'd expect `with-schema-config/` to be appended to it, but no! The actual directory is
-    // `withastro-astro-3d1f3ac/packages/astro/test/fixtures/content-collections/src/content/with-schema-config/`.
-    // I don't know how this came to be and how to infer it in the first place.
-
-    // Also, this custom implementation is not enough, we need to handle symlinks and file permissions and stuff.
-
-    // Skip directories, only handle files
-    if (isDir || file.data == null) {
-      continue
-    }
-
-    // Get the relative file path from the root
-    let filePath = file.name
-    // For some reason, some file names are simply the basename as expect to be added
-    // inside the last directory path found
-    if (!file.name.includes('/') && lastDirPath) {
-      filePath = lastDirPath + file.name
-    }
-    if (root) {
-      filePath = filePath.slice(root.length)
-    }
-
-    // Skip if not part of subdir
-    if (subdir) {
-      if (!filePath.startsWith(subdir)) {
-        continue
-      }
-      // Copy subdir to target root, so slice the subdir
-      filePath = filePath.slice(subdir.length)
-      subdirFound = true
-    }
-
-    filePath = path.join(extractPath, filePath)
-
-    // Write file
-    const dirPath = path.dirname(filePath)
-    if (!writtenDirs.has(dirPath)) {
-      await fs.mkdir(dirPath, { recursive: true })
-      writtenDirs.add(dirPath)
-    }
-    await fs.writeFile(filePath, Buffer.from(file.data))
   }
 
+  let subdirFound = false
+  // Create an empty directory here to make tar happy
+  await fs.mkdir(extractPath, { recursive: true })
+
+  // NOTE: using tar@6 because v7 is HUGE
+  await _extract({
+    file: tarPath,
+    cwd: extractPath,
+    onentry(entry) {
+      entry.path = entry.path.split('/').splice(1).join('/')
+      if (subdir) {
+        if (entry.path.startsWith(subdir)) {
+          // Rewrite path
+          entry.path = entry.path.slice(subdir.length - 1)
+          subdirFound = true
+        } else {
+          // Skip
+          entry.path = ''
+        }
+      }
+    },
+  })
+
   if (subdir && !subdirFound) {
+    // Clean up as it should be empty
+    await fs.rm(extractPath, { recursive: true, force: true })
     throw new SubdirNotFoundError(`Subdirectory not found in tar: ${subdir}`)
   }
 }
