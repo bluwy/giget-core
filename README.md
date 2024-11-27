@@ -107,7 +107,6 @@ parseGitURI('owner/repo/subdir#main') // { repo: 'owner/repo', subdir: '/subdir'
 - The `TemplateProvider` and `TemplateInfo` interfaces used by the `providers` option is slightly changed.
   - `TemplateProvider`: The function must return a `TemplateInfo` instead of null. If it fails to handle something, it should try a helpful error.
   - `TemplateInfo`: It no longer allows returning arbitrary keys in the object.
-- Debug logs are removed. (Perhaps to revisit if they're helpful in the future)
 - The returned object has the `TemplateInfo` on the `info` property instead of spreading on the returned object.
 - Any `GIGET_` environment variables support are removed. They should be passed as explicit options instead.
 

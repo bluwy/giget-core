@@ -1,7 +1,13 @@
 import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import path from 'node:path'
-import { cacheDirectory, download, extract, getProvider } from './utils.js'
+import {
+  cacheDirectory,
+  debug,
+  download,
+  extract,
+  getProvider,
+} from './utils.js'
 import { UnsupportedProviderError, DirExistError } from './errors.js'
 
 /** @type {import('./index.d.ts').downloadTemplate} */
@@ -50,8 +56,10 @@ export async function downloadTemplate(input, options = {}) {
           throw error
         }
         // Accept network errors if we have a cached version
+        debug('Download error. Using cached version:', error)
       },
     )
+    debug(`Downloaded ${template.tar} to ${tarPath}`)
   }
 
   if (!fss.existsSync(tarPath)) {

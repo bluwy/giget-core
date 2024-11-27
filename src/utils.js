@@ -96,6 +96,15 @@ export function parseGitURI(input) {
 }
 
 /**
+ * @param  {...unknown} args
+ */
+export function debug(...args) {
+  if (process.env.DEBUG) {
+    console.debug('[giget]', ...args)
+  }
+}
+
+/**
  * @param {string} url
  * @param {RequestInit & { validateStatus?: boolean }} [options]
  * @returns
