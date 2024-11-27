@@ -39,6 +39,15 @@ export interface ProviderOptions {
    * The authentication token used for fetching the template tarball (e.g. private repos)
    */
   auth?: string
+  /**
+   * Whether to prefer offline mode (i.e. don't make network requests).
+   * - `true`: Only use offline mode, will error if no cache is found
+   * - `'prefer'`: Use offline mode if there's a cache, otherwise fallback to fetching the template
+   * - `false`: Always fetch the template
+   *
+   * If the provider needs to send network requests, it should respect this option.
+   */
+  offline?: boolean | 'prefer'
 }
 
 export type TemplateProvider = (
@@ -98,7 +107,7 @@ export interface DownloadTemplateOptions {
   /**
    * Additional options to pass to the provider
    */
-  providerOptions?: ProviderOptions
+  providerOptions?: Pick<ProviderOptions, 'auth'>
 }
 
 export interface DownloadTemplateResult {

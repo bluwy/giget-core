@@ -107,7 +107,6 @@ export function debug(...args) {
 /**
  * @param {string} url
  * @param {RequestInit & { validateStatus?: boolean }} [options]
- * @returns
  */
 export async function sendFetch(url, options = {}) {
   // https://github.com/nodejs/undici/issues/1305

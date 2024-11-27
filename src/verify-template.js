@@ -12,8 +12,10 @@ export async function verifyTemplate(input, options = {}) {
     throw new UnsupportedProviderError(`Unsupported provider: ${providerName}`)
   }
 
+  // NOTE: `offline` is not passed as `verifyTemplate` itself is documented to require network access
+  const providerOptions = { ...options.providerOptions }
   const template = await Promise.resolve()
-    .then(() => provider(source, options.providerOptions ?? {}))
+    .then(() => provider(source, providerOptions))
     .catch((error) => {
       throw new Error(`The ${providerName} provider failed with errors`, {
         cause: error,

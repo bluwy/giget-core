@@ -21,8 +21,12 @@ export async function downloadTemplate(input, options = {}) {
     throw new UnsupportedProviderError(`Unsupported provider: ${providerName}`)
   }
 
+  const providerOptions = {
+    ...options.providerOptions,
+    offline: options.offline,
+  }
   const template = await Promise.resolve()
-    .then(() => provider(source, options.providerOptions ?? {}))
+    .then(() => provider(source, providerOptions))
     .catch((error) => {
       throw new Error(`The ${providerName} provider failed with errors`, {
         cause: error,
