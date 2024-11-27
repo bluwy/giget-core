@@ -7,6 +7,7 @@ A JavaScript API to download a template from a git repository or URL. The code i
 - Modified API interface (reduce input and output surface).
 - Removed custom registries and JSON template support.
 - Removed `GIGET_` special environment variables support.
+- Supports fetching the default branch of a repository.
 - Additional API utilities.
 - Node >=18 and ESM only.
 
