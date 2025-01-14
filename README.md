@@ -7,6 +7,7 @@ A JavaScript API to download a template from a git repository or URL. The code i
 - Modified API interface (reduce input and output surface).
 - Removed custom registries and JSON template support.
 - Removed `GIGET_` special environment variables support.
+- Removed fetch proxy support ([awaiting builtin solution](https://github.com/nodejs/node/issues/43187)).
 - Supports fetching the default branch of a repository.
 - Additional API utilities.
 - Node >=18 and ESM only.
@@ -109,7 +110,8 @@ parseGitURI('owner/repo/subdir#main') // { repo: 'owner/repo', subdir: '/subdir'
   - `TemplateProvider`: The function must return a `TemplateInfo` instead of null. If it fails to handle something, it should try a helpful error.
   - `TemplateInfo`: It no longer allows returning arbitrary keys in the object.
 - The returned object has the `TemplateInfo` on the `info` property instead of spreading on the returned object.
-- Any `GIGET_` environment variables support are removed. They should be passed as explicit options instead.
+- `GIGET_` environment variables support is removed. They should be passed as explicit options instead.
+- Fetch proxy support is removed ([awaiting builtin solution](https://github.com/nodejs/node/issues/43187)).
 
 ## Attribution
 
