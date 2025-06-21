@@ -4,7 +4,6 @@ import os from 'node:os'
 import path from 'node:path'
 import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
-import { extract as _extract } from 'tar'
 import { DownloadFailedError, SubdirNotFoundError } from './errors.js'
 import { providers as builtinProviders } from './providers.js'
 
@@ -154,6 +153,24 @@ export async function extract(tarPath, extractPath, subdir) {
   let subdirFound = false
   // Create an empty directory here to make tar happy
   await fs.mkdir(extractPath, { recursive: true })
+
+  // Workaround for Bun bug on Windows
+  // See https://github.com/oven-sh/bun/issues/12696
+  const needWorkaround =
+    // @ts-expect-error: TS doesn't know about the global Bun.
+    typeof Bun !== 'undefined' && process.platform === 'win32'
+
+  if (needWorkaround) {
+    process.env.__FAKE_PLATFORM__ = 'linux'
+  }
+
+  // We dynamically import `tar` to make sure the platform is faked if needed.
+  const { extract: _extract } = await import('tar')
+
+  if (needWorkaround) {
+    // Cleaning up the fake platform.
+    delete process.env.__FAKE_PLATFORM__
+  }
 
   // NOTE: using tar@6 because v7 is HUGE
   await _extract({
