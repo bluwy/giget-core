@@ -159,6 +159,7 @@ export async function extract(tarPath, extractPath, subdir) {
   const needWorkaround =
     // @ts-expect-error: TS doesn't know about the global Bun.
     typeof Bun !== 'undefined' && process.platform === 'win32'
+  const originalFakePlatform = process.env.__FAKE_PLATFORM__
 
   if (needWorkaround) {
     process.env.__FAKE_PLATFORM__ = 'linux'
@@ -169,7 +170,11 @@ export async function extract(tarPath, extractPath, subdir) {
 
   if (needWorkaround) {
     // Cleaning up the fake platform.
-    delete process.env.__FAKE_PLATFORM__
+    if (originalFakePlatform != null) {
+      process.env.__FAKE_PLATFORM__ = originalFakePlatform
+    } else {
+      delete process.env.__FAKE_PLATFORM__
+    }
   }
 
   // NOTE: using tar@6 because v7 is HUGE

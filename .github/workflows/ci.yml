@@ -51,7 +51,7 @@ jobs:
             Remove-Item -Path $nodePath -Force
             Write-Host "Removed node.exe"
           }
-          # Check Node.js  are not accessible
+          # Check Node.js are not accessible
           try {
             & node --version
             throw "Node.js is still accessible"
