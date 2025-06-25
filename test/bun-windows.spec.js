@@ -31,7 +31,7 @@ describe('downloadTemplate', () => {
 
   it('downloads a template', async () => {
     const targetDir = path.join(downloadDir, 'from-github')
-    const result = await downloadTemplate('unjs/template', {
+    await downloadTemplate('unjs/template', {
       dir: targetDir,
     })
 
