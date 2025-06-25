@@ -80,14 +80,14 @@ describe('downloadTemplate', () => {
 
   it('downloads a template in subdir', async () => {
     const targetDir = path.join(downloadDir, 'subdir')
-    const result = await downloadTemplate('unjs/template/playground', {
+    const result = await downloadTemplate('unjs/template/test', {
       dir: targetDir,
     })
 
     assert.ok(fss.existsSync(targetDir))
-    assert.ok(fss.existsSync(path.join(targetDir, 'index.ts')))
+    assert.ok(fss.existsSync(path.join(targetDir, 'index.test.ts')))
     assert.equal(result.info.name, 'unjs-template')
-    assert.equal(result.source, 'unjs/template/playground')
+    assert.equal(result.source, 'unjs/template/test')
   })
 
   // This relies on previous tests already caching unjs/template (github)

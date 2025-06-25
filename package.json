@@ -24,7 +24,8 @@
     "download"
   ],
   "scripts": {
-    "test": "node --test",
+    "test": "node --test \"test/*.test.js\"",
+    "test:bun": "bun test \"test/bun-windows.spec.js\"",
     "lint": "prettier \"**/*.{js,ts,md}\" --check",
     "format": "prettier \"**/*.{js,ts,md}\" --write",
     "typecheck": "tsc"

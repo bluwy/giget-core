@@ -22,7 +22,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
@@ -34,3 +34,32 @@ jobs:
         run: pnpm typecheck
       - name: Run tests
         run: pnpm test
+
+      # Test on Bun that only happens on windows without Node.js installed
+      - if: ${{ matrix.os == 'windows-latest' }}
+        name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - if: ${{ matrix.os == 'windows-latest' }}
+        name: Remove Node.js binaries on Windows
+        run: |
+          # Get node path using where command (Windows equivalent of which)
+          $nodePath = where.exe node 2>$null
+          if ($nodePath) {
+            Write-Host "Found node at: $nodePath"
+            Remove-Item -Path $nodePath -Force
+            Write-Host "Removed node.exe"
+          }
+          # Check Node.js are not accessible
+          try {
+            & node --version
+            throw "Node.js is still accessible"
+          } catch {
+            Write-Host "Node.js successfully removed"
+            exit 0
+          }
+        shell: pwsh
+      - if: ${{ matrix.os == 'windows-latest' }}
+        name: Run tests for Bun on Windows
+        run: bun run test:bun
