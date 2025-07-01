@@ -1,7 +1,7 @@
 {
   "name": "@bluwy/giget-core",
   "description": "Download template from a git repo or tarball URL",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "MIT",
   "type": "module",
   "types": "./src/index.d.ts",
