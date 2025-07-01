@@ -177,11 +177,15 @@ export async function extract(tarPath, extractPath, subdir) {
     }
   }
 
-  // NOTE: using tar@6 because v7 is HUGE
   await _extract({
     file: tarPath,
     cwd: extractPath,
-    onentry(entry) {
+    // `chmod` and `processUmask` are set for compatibility with v6 behaviour,
+    // however it also seems useful to enable these anyways in case the downloaded
+    // templates have executable bash scripts or similar.
+    chmod: true,
+    processUmask: 0o22,
+    onReadEntry(entry) {
       entry.path = entry.path.split('/').splice(1).join('/')
       if (subdir) {
         if (entry.path.startsWith(subdir)) {

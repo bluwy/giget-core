@@ -35,11 +35,10 @@
   },
   "packageManager": "pnpm@10.12.3",
   "dependencies": {
-    "tar": "^6.2.1"
+    "tar": "^7.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.33",
-    "@types/tar": "^6.1.13",
     "prettier": "^3.6.0",
     "typescript": "^5.8.3"
   }
