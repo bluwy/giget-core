@@ -22,11 +22,11 @@ export function getProvider(input, providerName, providers) {
   providerName ||= 'github'
 
   let source = input
-  const sourceProvierMatch = input.match(sourceProtoRe)
-  if (sourceProvierMatch) {
-    providerName = sourceProvierMatch[1]
+  const sourceProviderMatch = input.match(sourceProtoRe)
+  if (sourceProviderMatch) {
+    providerName = sourceProviderMatch[1]
     if (providerName !== 'http' && providerName !== 'https') {
-      source = input.slice(sourceProvierMatch[0].length)
+      source = input.slice(sourceProviderMatch[0].length)
     }
   }
 
