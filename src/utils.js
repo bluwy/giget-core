@@ -157,37 +157,35 @@ export async function extract(tarPath, extractPath, subdir) {
 
   const readStream = fss.createReadStream(tarPath)
   const unpackStream = unpackTar(extractPath, {
-    filter: (entry) => {
-      const path = entry.name.split('/').slice(1).join('/');
+    filter(entry) {
+      const path = entry.name.split('/').slice(1).join('/')
 
       // Skip the root directory
       if (path === '') {
-        return false;
+        return false
       }
 
       if (!subdir) {
-        return true;
+        return true
       }
 
       if (path.startsWith(subdir)) {
-        subdirFound = true;
-        return true;
+        subdirFound = true
+        return true
       } else {
-        return false;
+        return false
       }
     },
-
-    map: (entry) => {
-      let path = entry.name.split('/').slice(1).join('/');
+    map(entry) {
+      let path = entry.name.split('/').slice(1).join('/')
 
       if (subdir) {
-        path = path.slice(subdir.length);
+        path = path.slice(subdir.length)
       }
 
-      entry.name = path;
-      return entry;
+      entry.name = path
+      return entry
     },
-
   })
 
   await pipeline(readStream, createGunzip(), unpackStream)
