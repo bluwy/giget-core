@@ -2,8 +2,9 @@ import fs from 'node:fs/promises'
 import fss from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { pipeline } from 'node:stream'
-import { promisify } from 'node:util'
+import { pipeline } from 'node:stream/promises'
+import { createGunzip } from 'node:zlib'
+import { unpackTar } from 'modern-tar/fs'
 import { DownloadFailedError, SubdirNotFoundError } from './errors.js'
 import { providers as builtinProviders } from './providers.js'
 
@@ -76,7 +77,7 @@ export async function download(url, filePath, options = {}) {
 
   await fs.mkdir(path.dirname(filePath), { recursive: true })
   const stream = fss.createWriteStream(filePath)
-  await promisify(pipeline)(response.body, stream)
+  await pipeline(response.body, stream)
 
   await fs.writeFile(infoPath, JSON.stringify(info), 'utf8')
 }
@@ -154,51 +155,42 @@ export async function extract(tarPath, extractPath, subdir) {
   // Create an empty directory here to make tar happy
   await fs.mkdir(extractPath, { recursive: true })
 
-  // Workaround for Bun bug on Windows
-  // See https://github.com/oven-sh/bun/issues/12696
-  const needWorkaround =
-    // @ts-expect-error: TS doesn't know about the global Bun.
-    typeof Bun !== 'undefined' && process.platform === 'win32'
-  const originalFakePlatform = process.env.__FAKE_PLATFORM__
+  const readStream = fss.createReadStream(tarPath)
+  const unpackStream = unpackTar(extractPath, {
+    filter: (entry) => {
+      const path = entry.name.split('/').slice(1).join('/');
 
-  if (needWorkaround) {
-    process.env.__FAKE_PLATFORM__ = 'linux'
-  }
+      // Skip the root directory
+      if (path === '') {
+        return false;
+      }
 
-  // We dynamically import `tar` to make sure the platform is faked if needed.
-  const { extract: _extract } = await import('tar')
+      if (!subdir) {
+        return true;
+      }
 
-  if (needWorkaround) {
-    // Cleaning up the fake platform.
-    if (originalFakePlatform != null) {
-      process.env.__FAKE_PLATFORM__ = originalFakePlatform
-    } else {
-      delete process.env.__FAKE_PLATFORM__
-    }
-  }
-
-  await _extract({
-    file: tarPath,
-    cwd: extractPath,
-    // `chmod` and `processUmask` are set for compatibility with v6 behaviour,
-    // however it also seems useful to enable these anyways in case the downloaded
-    // templates have executable bash scripts or similar.
-    chmod: true,
-    processUmask: 0o22,
-    onReadEntry(entry) {
-      entry.path = entry.path.split('/').splice(1).join('/')
-      if (subdir) {
-        if (entry.path.startsWith(subdir)) {
-          // Rewrite path
-          entry.path = entry.path.slice(subdir.length - 1)
-          subdirFound = true
-        } else {
-          // Skip
-          entry.path = ''
-        }
+      if (path.startsWith(subdir)) {
+        subdirFound = true;
+        return true;
+      } else {
+        return false;
       }
     },
+
+    map: (entry) => {
+      let path = entry.name.split('/').slice(1).join('/');
+
+      if (subdir) {
+        path = path.slice(subdir.length);
+      }
+
+      entry.name = path;
+      return entry;
+    },
+
   })
+
+  await pipeline(readStream, createGunzip(), unpackStream)
 
   if (subdir && !subdirFound) {
     // Clean up as it should be empty
