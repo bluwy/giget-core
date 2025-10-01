@@ -35,7 +35,7 @@
   },
   "packageManager": "pnpm@10.12.3",
   "dependencies": {
-    "modern-tar": "^0.3.4"
+    "modern-tar": "https://pkg.pr.new/ayuhito/modern-tar@1482c25"
   },
   "devDependencies": {
     "@types/node": "^22.15.33",
