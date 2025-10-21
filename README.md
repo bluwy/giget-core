@@ -1,16 +1,18 @@
 # @bluwy/giget-core
 
-A JavaScript API to download a template from a git repository or URL. The code is largely based on [giget](https://github.com/unjs/giget) (and includes its license), but with the below main differences:
+A JavaScript API to download a template from a git repository or URL. The code is largely based on [giget](https://github.com/unjs/giget) (and includes its license), but with the following differences:
 
 - Only the JavaScript API. The CLI and unrelated APIs are stripped off.
 - Reduced dependencies to only 1 ([modern-tar](https://github.com/ayuhito/modern-tar)).
-- Modified API interface (reduce input and output surface).
+- Reduced input and output API surface.
 - Removed custom registries and JSON template support.
 - Removed `GIGET_` special environment variables support.
-- Removed fetch proxy support ([awaiting builtin solution](https://github.com/nodejs/node/issues/43187)).
+- Removed automatic fetch proxy support.
 - Supports fetching the default branch of a repository.
 - Additional API utilities.
 - Node >=18 and ESM only.
+
+See [Migrate from giget](#migrate-from-giget) for how to migrate to `@bluwy/giget-core`.
 
 ## Usage
 
@@ -99,19 +101,19 @@ parseGitURI('owner/repo/subdir#main') // { repo: 'owner/repo', subdir: '/subdir'
 
 ## Migrate from giget
 
-`giget` exports a `downloadTemplate` programmatic API as well. For most basic usecases, there's no significant difference and should be a drop-in replacement. However, there's certain features that work differently:
+`giget` exports a `downloadTemplate` programmatic API as well. If you have set any options, you may need to adjust them as below:
 
 - The `forceClean` option is merged as `force: 'clean'`.
 - The `preferOffline` option is merged as `offline: 'prefer'`.
-- The `registry` option is removed. You can no longer download templates hosted from [giget](https://github.com/unjs/giget/tree/main/templates). Pass the direct tarball URL or git repo instead.
-- The `install` and `silent` options used for installing dependencies is removed. You should manually install the dependencies yourself. Previously `giget` used [nypm](https://github.com/unjs/nypm) under the hood.
+- The `registry` option is removed. You can no longer download templates hosted from the [giget repo](https://github.com/unjs/giget/tree/main/templates). Pass the direct tarball URL or git repo instead.
+- The `install` and `silent` options used for installing dependencies is removed. You should manually install the dependencies yourself. `giget` uses [nypm](https://github.com/unjs/nypm) under the hood.
 - The `auth` option is moved to `providerOptions.auth`.
 - The `TemplateProvider` and `TemplateInfo` interfaces used by the `providers` option is slightly changed.
   - `TemplateProvider`: The function must return a `TemplateInfo` instead of null. If it fails to handle something, it should try a helpful error.
   - `TemplateInfo`: It no longer allows returning arbitrary keys in the object.
 - The returned object has the `TemplateInfo` on the `info` property instead of spreading on the returned object.
 - `GIGET_` environment variables support is removed. They should be passed as explicit options instead.
-- Fetch proxy support is removed ([awaiting builtin solution](https://github.com/nodejs/node/issues/43187)).
+- Automatic fetch proxy support is removed. To re-enable, use Node.js [v22.21.0](https://nodejs.org/en/blog/release/v22.21.0) and above, and set `NODE_USE_ENV_PROXY=1` in your environment variables. See the [Node.js docs](https://nodejs.org/api/http.html#built-in-proxy-support) for more information.
 
 ## Attribution
 
