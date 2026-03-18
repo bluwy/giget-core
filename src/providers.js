@@ -41,7 +41,7 @@ export const github = async (input, options) => {
     headers: {
       ...(options.auth ? { Authorization: `Bearer ${options.auth}` } : {}),
       Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
+      'X-GitHub-Api-Version': '2026-03-10',
     },
     url: `https://github.com/${parsed.repo}/tree/${ref}${parsed.subdir}`,
     tar: `https://api.github.com/repos/${parsed.repo}/tarball/${ref}`,
