@@ -140,11 +140,10 @@ export declare function downloadTemplate(
   options?: DownloadTemplateOptions,
 ): Promise<DownloadTemplateResult>
 
-export interface VerifyTemplateOptions
-  extends Pick<
-    DownloadTemplateOptions,
-    'provider' | 'providers' | 'providerOptions'
-  > {}
+export interface VerifyTemplateOptions extends Pick<
+  DownloadTemplateOptions,
+  'provider' | 'providers' | 'providerOptions'
+> {}
 
 /**
  * Check whether the template is valid. Requires network access.
