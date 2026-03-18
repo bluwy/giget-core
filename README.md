@@ -3,11 +3,11 @@
 A JavaScript API to download a template from a git repository or URL. The code is largely based on [giget](https://github.com/unjs/giget) (and includes its license), but with the following differences:
 
 - Only the JavaScript API. The CLI and unrelated APIs are stripped off.
-- Reduced dependencies to only 1 ([modern-tar](https://github.com/ayuhito/modern-tar)).
+- Reduced dependencies to only 1 ([modern-tar](https://github.com/ayuhito/modern-tar)) (unbundled).
 - Reduced input and output API surface.
 - Removed custom registries and JSON template support.
 - Removed `GIGET_` special environment variables support.
-- Removed automatic fetch proxy support.
+- Removed automatic fetch proxy support. Rely on [Node.js built-in support](https://nodejs.org/api/http.html#built-in-proxy-support) instead.
 - Supports fetching the default branch of a repository.
 - Additional API utilities.
 - Node >=18 and ESM only.
